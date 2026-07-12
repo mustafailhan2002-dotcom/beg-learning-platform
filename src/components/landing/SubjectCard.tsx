@@ -1,6 +1,7 @@
 type SubjectCardProps = {
   name: string;
   description: string;
+  href?: string;
 };
 
 export function SubjectCard({ name, description }: SubjectCardProps) {

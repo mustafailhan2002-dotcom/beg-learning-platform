@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { PlatformHeader } from "@/components/landing/PlatformHeader";
 import { StatusBadge } from "@/components/teacher/StatusBadge";
 import { getTeacherReviewItems } from "@/lib/teacher/supabase";
 
@@ -14,6 +15,7 @@ export default async function TeacherPage() {
     <ProtectedRoute>
       <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(250,204,21,0.16),transparent_24%),linear-gradient(135deg,#07111f_0%,#0f1f3d_55%,#07111f_100%)] px-4 py-6 text-slate-100 sm:px-6 lg:px-8 lg:py-10">
         <div className="mx-auto max-w-7xl rounded-[2rem] border border-slate-800/80 bg-slate-950/80 p-6 shadow-2xl shadow-slate-950/50 backdrop-blur sm:p-8">
+          <PlatformHeader activePath="/teacher" />
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.35em] text-amber-400">BEG Teacher Workspace</p>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { AiStudioShell } from "@/components/ai-studio/AiStudioShell";
+import { PlatformHeader } from "@/components/landing/PlatformHeader";
 import { StatusBadge } from "@/components/ai-studio/StatusBadge";
 
 const stats = [
@@ -20,6 +21,7 @@ export default function AiStudioPage() {
   return (
     <ProtectedRoute>
       <AiStudioShell title="AI Content Studio" eyebrow="Generative workspace" description="Generate high-quality lesson plans and question banks for the British curriculum with teacher review built in." activePath="/ai-studio">
+        <PlatformHeader activePath="/ai-studio" />
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {stats.map((item) => (
             <div key={item.label} className="rounded-3xl border border-slate-800 bg-slate-900/70 p-5">

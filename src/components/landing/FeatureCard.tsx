@@ -2,6 +2,7 @@ type FeatureCardProps = {
   title: string;
   description: string;
   icon: string;
+  href?: string;
 };
 
 export function FeatureCard({ title, description, icon }: FeatureCardProps) {

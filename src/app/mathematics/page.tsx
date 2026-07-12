@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { PlatformHeader } from "@/components/landing/PlatformHeader";
 import { ErrorState } from "@/components/mathematics/ErrorState";
 import { MathematicsShell } from "@/components/mathematics/MathematicsShell";
 import { StatCard } from "@/components/mathematics/StatCard";
@@ -18,6 +19,7 @@ export default async function MathematicsPage() {
     return (
       <ProtectedRoute>
         <MathematicsShell title="BEG Mathematics Studio" eyebrow="Premium learning module" description="Coordinate curriculum design, lesson authoring, assessments and review workflows for IGCSE Mathematics." activePath="/mathematics">
+          <PlatformHeader activePath="/mathematics" />
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             <StatCard label="Total lessons" value={lessons.length.toString()} detail="Lesson assets in the library" accent="amber" />
             <StatCard label="Total questions" value={questions.length.toString()} detail="Assessment-ready question bank" accent="sky" />

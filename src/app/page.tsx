@@ -1,5 +1,7 @@
+import Link from "next/link";
 import { FeatureCard } from "@/components/landing/FeatureCard";
 import { Footer } from "@/components/landing/Footer";
+import { PlatformNav } from "@/components/landing/PlatformNav";
 import { SectionHeading } from "@/components/landing/SectionHeading";
 import { SubjectCard } from "@/components/landing/SubjectCard";
 
@@ -8,31 +10,37 @@ const features = [
     title: "Cambridge",
     description: "Structured pathways and assessment-ready resources for Cambridge International programmes.",
     icon: "✦",
+    href: "/mathematics/curriculum",
   },
   {
     title: "Pearson Edexcel",
     description: "Teachable, exam-focused content aligned to Pearson Edexcel specifications.",
     icon: "◌",
+    href: "/mathematics",
   },
   {
     title: "OxfordAQA",
     description: "Flexible teaching materials designed for OxfordAQA curriculum delivery.",
     icon: "⬢",
+    href: "/dashboard",
   },
   {
     title: "UCAS Pathways",
     description: "Guided progression and university readiness support across UK pathways.",
     icon: "↗",
+    href: "/dashboard",
   },
   {
     title: "AI Lesson Generator",
     description: "Create adaptive lesson plans, objectives, and classroom activities in minutes.",
     icon: "⚡",
+    href: "/ai-studio/lesson-generator",
   },
   {
     title: "AI Question Bank",
     description: "Generate differentiated assessments and instant feedback for every learner.",
     icon: "◍",
+    href: "/ai-studio/question-generator",
   },
 ];
 
@@ -40,22 +48,27 @@ const subjects = [
   {
     name: "Mathematics",
     description: "Precision teaching for algebra, calculus, statistics, and problem solving.",
+    href: "/mathematics",
   },
   {
     name: "Biology",
     description: "Engaging content that connects theory, investigation, and scientific inquiry.",
+    href: "/biology",
   },
   {
     name: "Chemistry",
     description: "Interactive material for practicals, reactions, and core concepts.",
+    href: "/chemistry",
   },
   {
     name: "Physics",
     description: "Conceptual teaching support for mechanics, energy, and modern physics.",
+    href: "/physics",
   },
   {
     name: "Computer Science",
     description: "Future-ready programming and computational thinking experiences.",
+    href: "/computer-science",
   },
 ];
 
@@ -64,24 +77,7 @@ export default function Home() {
     <main className="min-h-screen">
       <section className="relative overflow-hidden">
         <div className="mx-auto flex max-w-7xl flex-col px-6 py-16 sm:px-8 lg:px-10 lg:py-24">
-          <nav className="flex items-center justify-between rounded-full border border-slate-800/80 bg-slate-950/70 px-5 py-3 backdrop-blur">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.35em] text-amber-400">
-                BEG
-              </p>
-            </div>
-            <div className="hidden items-center gap-8 text-sm text-slate-300 sm:flex">
-              <a href="#features" className="transition hover:text-white">
-                Features
-              </a>
-              <a href="#subjects" className="transition hover:text-white">
-                Subjects
-              </a>
-              <a href="#contact" className="transition hover:text-white">
-                Contact
-              </a>
-            </div>
-          </nav>
+          <PlatformNav />
 
           <div className="mt-16 grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:mt-24">
             <div>
@@ -99,18 +95,18 @@ export default function Home() {
                 assessment generation, and university pathway guidance in one platform.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <a
-                  href="#contact"
+                <Link
+                  href="/login"
                   className="rounded-full bg-amber-500 px-6 py-3 text-center font-semibold text-slate-950 transition hover:bg-amber-400"
                 >
                   Get Started
-                </a>
-                <a
-                  href="#features"
+                </Link>
+                <Link
+                  href="/contact"
                   className="rounded-full border border-slate-700 px-6 py-3 text-center font-semibold text-white transition hover:border-amber-400 hover:text-amber-300"
                 >
                   Book a Demo
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -156,7 +152,9 @@ export default function Home() {
         />
         <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {features.map((feature) => (
-            <FeatureCard key={feature.title} {...feature} />
+            <Link key={feature.title} href={feature.href} className="block">
+              <FeatureCard {...feature} />
+            </Link>
           ))}
         </div>
       </section>
@@ -169,7 +167,9 @@ export default function Home() {
         />
         <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-5">
           {subjects.map((subject) => (
-            <SubjectCard key={subject.name} {...subject} />
+            <Link key={subject.name} href={subject.href} className="block">
+              <SubjectCard {...subject} />
+            </Link>
           ))}
         </div>
       </section>
