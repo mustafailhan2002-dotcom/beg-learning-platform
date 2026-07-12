@@ -1,5 +1,23 @@
 create extension if not exists "uuid-ossp";
 
+create or replace function public.set_updated_at()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+create or replace function public.is_teacher_or_admin()
+returns boolean
+language sql
+stable
+as $$
+  select coalesce((auth.jwt() -> 'user_metadata' ->> 'role')::text, '') in ('teacher', 'school_admin', 'ministry', 'super_admin');
+$$;
+
 create table if not exists public.subjects (
   id uuid primary key default uuid_generate_v4(),
   name text not null unique,
@@ -16,7 +34,8 @@ create table if not exists public.units (
   slug text not null,
   description text,
   created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+  updated_at timestamptz not null default now(),
+  unique(subject_id, slug)
 );
 
 create table if not exists public.topics (
@@ -26,7 +45,8 @@ create table if not exists public.topics (
   slug text not null,
   description text,
   created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+  updated_at timestamptz not null default now(),
+  unique(unit_id, slug)
 );
 
 create table if not exists public.lessons (
@@ -106,6 +126,12 @@ create index if not exists idx_questions_subject_id on public.questions(subject_
 create index if not exists idx_questions_status on public.questions(status);
 create index if not exists idx_content_reviews_content_type_content_id on public.content_reviews(content_type, content_id);
 
+create trigger set_updated_at_subjects before update on public.subjects for each row execute function public.set_updated_at();
+create trigger set_updated_at_units before update on public.units for each row execute function public.set_updated_at();
+create trigger set_updated_at_topics before update on public.topics for each row execute function public.set_updated_at();
+create trigger set_updated_at_lessons before update on public.lessons for each row execute function public.set_updated_at();
+create trigger set_updated_at_questions before update on public.questions for each row execute function public.set_updated_at();
+
 alter table public.subjects enable row level security;
 alter table public.units enable row level security;
 alter table public.topics enable row level security;
@@ -115,11 +141,23 @@ alter table public.questions enable row level security;
 alter table public.content_reviews enable row level security;
 alter table public.audit_logs enable row level security;
 
-create policy if not exists "Allow authenticated read access" on public.subjects for select using (auth.role() = 'authenticated');
-create policy if not exists "Allow authenticated read access" on public.units for select using (auth.role() = 'authenticated');
-create policy if not exists "Allow authenticated read access" on public.topics for select using (auth.role() = 'authenticated');
-create policy if not exists "Allow authenticated read access" on public.lessons for select using (auth.role() = 'authenticated');
-create policy if not exists "Allow authenticated read access" on public.lesson_versions for select using (auth.role() = 'authenticated');
-create policy if not exists "Allow authenticated read access" on public.questions for select using (auth.role() = 'authenticated');
-create policy if not exists "Allow authenticated read access" on public.content_reviews for select using (auth.role() = 'authenticated');
-create policy if not exists "Allow authenticated read access" on public.audit_logs for select using (auth.role() = 'authenticated');
+create policy if not exists "Authenticated users can read curriculum metadata" on public.subjects for select using (auth.role() = 'authenticated');
+create policy if not exists "Teachers and admins can manage curriculum metadata" on public.subjects for all using (public.is_teacher_or_admin()) with check (public.is_teacher_or_admin());
+
+create policy if not exists "Authenticated users can read units" on public.units for select using (auth.role() = 'authenticated');
+create policy if not exists "Teachers and admins can manage units" on public.units for all using (public.is_teacher_or_admin()) with check (public.is_teacher_or_admin());
+
+create policy if not exists "Authenticated users can read topics" on public.topics for select using (auth.role() = 'authenticated');
+create policy if not exists "Teachers and admins can manage topics" on public.topics for all using (public.is_teacher_or_admin()) with check (public.is_teacher_or_admin());
+
+create policy if not exists "Students can read published lessons" on public.lessons for select using (auth.role() = 'authenticated' and (status = 'published' or public.is_teacher_or_admin()));
+create policy if not exists "Teachers and admins can manage lessons" on public.lessons for all using (public.is_teacher_or_admin()) with check (public.is_teacher_or_admin());
+
+create policy if not exists "Authenticated users can read lesson versions" on public.lesson_versions for select using (auth.role() = 'authenticated');
+create policy if not exists "Teachers and admins can manage lesson versions" on public.lesson_versions for all using (public.is_teacher_or_admin()) with check (public.is_teacher_or_admin());
+
+create policy if not exists "Students can read published questions" on public.questions for select using (auth.role() = 'authenticated' and (status = 'published' or public.is_teacher_or_admin()));
+create policy if not exists "Teachers and admins can manage questions" on public.questions for all using (public.is_teacher_or_admin()) with check (public.is_teacher_or_admin());
+
+create policy if not exists "Teachers and admins can manage reviews" on public.content_reviews for all using (public.is_teacher_or_admin()) with check (public.is_teacher_or_admin());
+create policy if not exists "Teachers and admins can manage audit logs" on public.audit_logs for all using (public.is_teacher_or_admin()) with check (public.is_teacher_or_admin());
