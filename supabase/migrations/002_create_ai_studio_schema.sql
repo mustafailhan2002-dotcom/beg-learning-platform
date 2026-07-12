@@ -71,17 +71,39 @@ alter table public.ai_generated_lessons enable row level security;
 alter table public.ai_generated_questions enable row level security;
 alter table public.ai_generation_logs enable row level security;
 
+alter table public.ai_generation_jobs drop constraint if exists ai_generation_jobs_kind_check;
+alter table public.ai_generation_jobs add constraint ai_generation_jobs_kind_check check (kind in ('lesson','questions'));
+alter table public.ai_generation_jobs drop constraint if exists ai_generation_jobs_status_check;
+alter table public.ai_generation_jobs add constraint ai_generation_jobs_status_check check (status in ('generating','draft','review','approved','rejected','published'));
+
+alter table public.ai_generated_lessons drop constraint if exists ai_generated_lessons_status_check;
+alter table public.ai_generated_lessons add constraint ai_generated_lessons_status_check check (status in ('generating','draft','review','approved','rejected','published'));
+
+alter table public.ai_generated_questions drop constraint if exists ai_generated_questions_status_check;
+alter table public.ai_generated_questions add constraint ai_generated_questions_status_check check (status in ('generating','draft','review','approved','rejected','published'));
+
+drop policy if exists "Authenticated users can read their generation jobs" on public.ai_generation_jobs;
 create policy "Authenticated users can read their generation jobs" on public.ai_generation_jobs for select using (auth.role() = 'authenticated' and (user_id is null or user_id = auth.uid()));
+drop policy if exists "Authenticated users can insert their generation jobs" on public.ai_generation_jobs;
 create policy "Authenticated users can insert their generation jobs" on public.ai_generation_jobs for insert with check (auth.role() = 'authenticated');
+drop policy if exists "Owners and teachers can update generation jobs" on public.ai_generation_jobs;
 create policy "Owners and teachers can update generation jobs" on public.ai_generation_jobs for update using (auth.role() = 'authenticated' and (user_id is null or user_id = auth.uid() or auth.jwt() -> 'user_metadata' ->> 'role' in ('teacher','school_admin','ministry','super_admin')));
 
+drop policy if exists "Authenticated users can read their generated lessons" on public.ai_generated_lessons;
 create policy "Authenticated users can read their generated lessons" on public.ai_generated_lessons for select using (auth.role() = 'authenticated');
+drop policy if exists "Authenticated users can insert generated lessons" on public.ai_generated_lessons;
 create policy "Authenticated users can insert generated lessons" on public.ai_generated_lessons for insert with check (auth.role() = 'authenticated');
+drop policy if exists "Owners and teachers can update generated lessons" on public.ai_generated_lessons;
 create policy "Owners and teachers can update generated lessons" on public.ai_generated_lessons for update using (auth.role() = 'authenticated');
 
+drop policy if exists "Authenticated users can read their generated questions" on public.ai_generated_questions;
 create policy "Authenticated users can read their generated questions" on public.ai_generated_questions for select using (auth.role() = 'authenticated');
+drop policy if exists "Authenticated users can insert generated questions" on public.ai_generated_questions;
 create policy "Authenticated users can insert generated questions" on public.ai_generated_questions for insert with check (auth.role() = 'authenticated');
+drop policy if exists "Owners and teachers can update generated questions" on public.ai_generated_questions;
 create policy "Owners and teachers can update generated questions" on public.ai_generated_questions for update using (auth.role() = 'authenticated');
 
+drop policy if exists "Authenticated users can read generation logs" on public.ai_generation_logs;
 create policy "Authenticated users can read generation logs" on public.ai_generation_logs for select using (auth.role() = 'authenticated');
+drop policy if exists "Authenticated users can insert generation logs" on public.ai_generation_logs;
 create policy "Authenticated users can insert generation logs" on public.ai_generation_logs for insert with check (auth.role() = 'authenticated');
