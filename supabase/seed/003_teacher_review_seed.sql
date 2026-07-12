@@ -1,0 +1,103 @@
+insert into public.lessons (
+  id,
+  subject_id,
+  unit_id,
+  topic_id,
+  lesson_id,
+  title,
+  status,
+  difficulty,
+  learning_objectives,
+  explanation,
+  worked_examples,
+  practice_questions,
+  homework,
+  mark_scheme,
+  teacher_notes
+)
+values (
+  'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+  '11111111-1111-1111-1111-111111111111',
+  '22222222-2222-2222-2222-222222222222',
+  '33333333-3333-3333-3333-333333333333',
+  'LESS-101',
+  'Fractions and Ratio Review Pack',
+  'review',
+  'Foundation',
+  '["Explain equivalent fractions", "Apply ratio reasoning to simple problems"]'::jsonb,
+  'Introduce the lesson by comparing shaded bars and discussing proportional reasoning.',
+  '["Model 2/3 as 4/6", "Compare 3:4 and 6:8"]'::jsonb,
+  '["Find equivalent fractions for 3/5", "Simplify 8:12"]'::jsonb,
+  'Complete one ratio word problem and one equivalent fractions challenge.',
+  '["Award method marks for working", "Award communication marks for clear explanation"]'::jsonb,
+  'Use colour tiles to support access for learners needing concrete examples.'
+),
+(
+  'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
+  '11111111-1111-1111-1111-111111111111',
+  '22222222-2222-2222-2222-222222222222',
+  '33333333-3333-3333-3333-333333333333',
+  'LESS-102',
+  'Linear Equations Starter Lesson',
+  'revision_required',
+  'Higher',
+  '["Solve one-step equations", "Explain inverse operations"]'::jsonb,
+  'Students use inverse operations to solve simple linear equations.',
+  '["Solve x + 4 = 12", "Solve 3x = 18"]'::jsonb,
+  '["Solve 2x + 5 = 15", "Explain why inverse operations are used"]'::jsonb,
+  'Complete one retrieval practice task and reflect on the method used.',
+  '["Award marks for correct inverse operation", "Award marks for clear method"]'::jsonb,
+  'Return with a clearer example of the balancing method.'
+),
+(
+  'cccccccc-cccc-cccc-cccc-cccccccccccc',
+  '11111111-1111-1111-1111-111111111111',
+  '22222222-2222-2222-2222-222222222222',
+  '33333333-3333-3333-3333-333333333333',
+  'LESS-103',
+  'Probability with Tree Diagrams',
+  'published',
+  'Foundation',
+  '["Use tree diagrams to model outcomes", "Calculate simple probabilities"]'::jsonb,
+  'Tree diagrams help learners organise possible outcomes clearly.',
+  '["Model two coin toss outcomes", "Compute the probability of two heads"]'::jsonb,
+  '["Create a tree diagram for rolling a die twice", "Explain the result"]'::jsonb,
+  'Complete a short reflection on how the diagram improved accuracy.',
+  '["Award marks for correct branches", "Award marks for accurate probability statements"]'::jsonb,
+  'Keep the example concrete and use colour coding for branches.'
+)
+on conflict (id) do nothing;
+
+insert into public.questions (
+  id,
+  subject_id,
+  unit_id,
+  topic_id,
+  question_id,
+  question_text,
+  options,
+  correct_answer,
+  explanation,
+  marks,
+  difficulty,
+  command_word,
+  bloom_level,
+  status
+)
+values (
+  'dddddddd-dddd-dddd-dddd-dddddddddddd',
+  '11111111-1111-1111-1111-111111111111',
+  '22222222-2222-2222-2222-222222222222',
+  '33333333-3333-3333-3333-333333333333',
+  'Q-101',
+  'Simplify 4x + 7 - 2x + 3.',
+  '["2x + 10", "2x + 4", "6x + 10", "6x + 4"]'::jsonb,
+  '2x + 10',
+  'Combine like terms carefully to simplify the expression.',
+  2,
+  'Foundation',
+  'Simplify',
+  'Apply',
+  'review'
+)
+on conflict (id) do nothing;
